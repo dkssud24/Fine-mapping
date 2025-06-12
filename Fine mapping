@@ -24,8 +24,8 @@ d <- fread("/BiO/hae/000029_GenomicSEM/central_MAF005/fine/input.fine")
 c <- d[ d$chromosome == 17,]
 aa <- 94684326-500000
 aa2 <- 94684326+500000
-c2 <- c [ c$position > 65821640,]
-c3 <- c2 [ c2$position < 65980494,]
+c2 <- c [ c$position > aa,]
+c3 <- c2 [ c2$position < aa2,]
 aa
 aa2
 
