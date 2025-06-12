@@ -29,22 +29,22 @@ c3 <- c2 [ c2$position < aa2,]
 aa
 aa2
 
-fwrite(c3,'BPTF.z',quote=FALSE,row.names=FALSE,sep=' ')
+fwrite(c3,'gene.z',quote=FALSE,row.names=FALSE,sep=' ')
 
 #step2.sh
-cut -f1-3 -d" " BPTF.z > BPTF.snp
-cut -f1 -d" " BPTF.z > tmp.snp
+cut -f1-3 -d" " gene.z > gene.snp
+cut -f1 -d" " gene.z > tmp.snp
 
 #step3.sh
 plink --bfile /BiO/hae/000006_ref_1000G/ref --chr 17 --from-bp 65821640 --to-bp 65980494 --r square --extract tmp.snp --out step3.outcome
 
 #Gene name
-cat step3.outcome.ld | tr '\t' ' ' > BPTF.ld
+cat step3.outcome.ld | tr '\t' ' ' > gene.ld
 
 #step4.sh
-echo "z;ld;snp;config;cred;log;n_samples" > BPTF.master
-echo "BPTF.z;BPTF.ld;BPTF.snp;BPTF.config;BPTF.cred;BPTF.log;889004" >> BPTF.master
+echo "z;ld;snp;config;cred;log;n_samples" > gene.master
+echo "BPTF.z;gene.ld;gene.snp;gene.config;gene.cred;gene.log;889004" >> gene.master
 
 #step5.sh
-/BiO/hae/000030_Finemap/finemap_v1.4.2_x86_64/./finemap_v1.4.2_x86_64 --sss --in-files BPTF.master --n-causal-snps 10 --log
+/BiO/hae/000030_Finemap/finemap_v1.4.2_x86_64/./finemap_v1.4.2_x86_64 --sss --in-files gene.master --n-causal-snps 10 --log
 
