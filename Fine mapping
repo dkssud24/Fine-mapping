@@ -21,7 +21,7 @@ library(data.table)
 d <- fread("/BiO/hae/000029_GenomicSEM/central_MAF005/fine/input.fine")
 
 #Have to change specific gene
-c <- d[ d$chromosome == 17,]
+c <- d[ d$chromosome == 6,]
 aa <- 94684326-500000
 aa2 <- 94684326+500000
 c2 <- c [ c$position > aa,]
