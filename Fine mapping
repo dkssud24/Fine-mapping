@@ -1,0 +1,46 @@
+#http://www.christianbenner.com/
+
+#http://www.christianbenner.com/finemap_v1.4.2_MacOSX.tgz
+
+#FINEMAP-ing articles
+#-		Refining fine-mapping: effect sizes and regional heritability. bioRxiv. (2018).
+#-		Prospects of fine-mapping trait-associated genomic regions by using summary statistics from genome-wide association studies. Am. J. Hum. Genet. (2017).
+#-		FINEMAP: Efficient variable selection using summary data from genome-wide association studies. Bioinformatics 32, 1493-1501 (2016).
+#FINEMAP is a program for
+
+#1identifying causal SNPs
+#2estimating effect sizes of causal SNPs
+#3estimating the heritability contribution of causal SNPs
+#in genomic regions associated with complex traits and disease. FINEMAP is computationally efficient by using summary statistics from genome-wide association studies and robust by applying a shotgun stochastic search algorithm (Hans et al., 2007). It produces accurate results in a fraction of processing time of existing approaches. It is therefore the ideal tool for analyzing growing amounts of data produced in genome-wide association studies and emerging sequencing or biobank projects.
+
+#Download (license)
+
+
+#step1.R
+library(data.table)
+d <- fread("/BiO/hae/000029_GenomicSEM/central_MAF005/fine/input.fine")
+
+#Have to change specific gene
+c <- d[ d$chromosome == 17,]
+c2 <- c [ c$position > 65821640,]
+c3 <- c2 [ c2$position < 65980494,]
+
+fwrite(c3,'BPTF.z',quote=FALSE,row.names=FALSE,sep=' ')
+
+#step2.sh
+cut -f1-3 -d" " BPTF.z > BPTF.snp
+cut -f1 -d" " BPTF.z > tmp.snp
+
+#step3.sh
+plink --bfile /BiO/hae/000006_ref_1000G/ref --chr 17 --from-bp 65821640 --to-bp 65980494 --r square --extract tmp.snp --out step3.outcome
+
+#Gene name
+cat step3.outcome.ld | tr '\t' ' ' > BPTF.ld
+
+#step4.sh
+echo "z;ld;snp;config;cred;log;n_samples" > BPTF.master
+echo "BPTF.z;BPTF.ld;BPTF.snp;BPTF.config;BPTF.cred;BPTF.log;889004" >> BPTF.master
+
+#step5.sh
+/BiO/hae/000030_Finemap/finemap_v1.4.2_x86_64/./finemap_v1.4.2_x86_64 --sss --in-files BPTF.master --n-causal-snps 10 --log
+
